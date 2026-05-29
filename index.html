@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ayokunle Omotayo — Backend Developer</title>
+  <meta name="description" content="Professional backend developer specialising in Node.js, Django (Python) and Laravel (PHP). Available for global remote gigs and local Lagos projects." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <!-- AO Favicon (inline SVG) -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0f1e'/%3E%3Crect x='1' y='1' width='62' height='62' rx='13' fill='none' stroke='%2310b981' stroke-width='2'/%3E%3Ctext x='32' y='44' font-family='Archivo%2C Arial%2C sans-serif' font-weight='900' font-size='28' fill='%2310b981' text-anchor='middle'%3EAO%3C/text%3E%3C/svg%3E" />
+  <style>
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:        #0a0f1e;
+      --surface:   #0f172a;
+      --card:      #1e293b;
+      --border:    rgba(16,185,129,.18);
+      --green:     #10b981;
+      --green-dim: #059669;
+      --green-glow:rgba(16,185,129,.25);
+      --text:      #f1f5f9;
+      --muted:     #94a3b8;
+      --nav-bg:    rgba(10,15,30,.88);
+      --mobile-bg: rgba(10,15,30,.97);
+      --heading:   'Archivo', sans-serif;
+      --body:      'Space Grotesk', sans-serif;
+      --radius:    12px;
+      --nav-h:     72px;
+    }
+    /* ===== LIGHT MODE ===== */
+    html.light {
+      --bg:        #f0fdf8;
+      --surface:   #ffffff;
+      --card:      #f8fffe;
+      --border:    rgba(16,185,129,.22);
+      --green:     #059669;
+      --green-dim: #047857;
+      --green-glow:rgba(5,150,105,.2);
+      --text:      #0f172a;
+      --muted:     #475569;
+      --nav-bg:    rgba(240,253,248,.92);
+      --mobile-bg: rgba(240,253,248,.98);
+    }
+    html.light body::before {
+      background-image:
+        linear-gradient(rgba(5,150,105,.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(5,150,105,.06) 1px, transparent 1px);
+    }
+    html.light .hero-name {
+      background: linear-gradient(135deg, #0f172a 30%, #334155 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    html.light .skill-bar-wrap { background: rgba(0,0,0,.08); }
+    html.light .form-group input,
+    html.light .form-group select,
+    html.light .form-group textarea {
+      background: #ffffff; color: var(--text); border-color: rgba(16,185,129,.3);
+    }
+    html.light .form-group select option { background: #fff; color: #0f172a; }
+    html.light .project-links a,
+    html.light .footer-socials a { background: rgba(0,0,0,.04); }
+    html.light .toast { box-shadow: 0 8px 32px rgba(0,0,0,.15); }
+    html.light #btt { background: #fff; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--body);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+    button { cursor: pointer; font-family: var(--body); border: none; outline: none; }
+    section { padding: 96px 0; }
+    .container { max-width: 1160px; margin: 0 auto; padding: 0 24px; }
+    h1,h2,h3,h4 { font-family: var(--heading); line-height: 1.2; }
+
+    /* ===== SCROLLBAR ===== */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--surface); }
+    ::-webkit-scrollbar-thumb { background: var(--green-dim); border-radius: 3px; }
+
+    /* ===== GRID BG ===== */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(16,185,129,.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(16,185,129,.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none; z-index: 0;
+    }
+
+    /* ===== NAVBAR ===== */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: var(--nav-h);
+      z-index: 100;
+      background: var(--nav-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      transition: background .3s;
+    }
+    .nav-inner {
+      max-width: 1160px; margin: 0 auto; padding: 0 24px;
+      height: 100%; display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: var(--heading);
+      font-weight: 800; font-size: 1.5rem;
+      background: linear-gradient(135deg, var(--green), #34d399);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .nav-links { display: flex; gap: 36px; list-style: none; }
+    .nav-links a {
+      font-size: .9rem; font-weight: 500; color: var(--muted);
+      transition: color .2s; position: relative;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -4px; left: 0; right: 0;
+      height: 2px; background: var(--green); border-radius: 1px;
+      transform: scaleX(0); transition: transform .2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--text); }
+    .nav-links a:hover::after, .nav-links a.active::after { transform: scaleX(1); }
+    /* theme toggle */
+    .theme-btn {
+      width: 38px; height: 38px; border-radius: 9px;
+      background: rgba(255,255,255,.05); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--muted); font-size: .9rem;
+      transition: all .2s; cursor: pointer;
+      flex-shrink: 0;
+    }
+    .theme-btn:hover { background: var(--green); color: #fff; border-color: var(--green); }
+    html.light .theme-btn { background: rgba(0,0,0,.05); }
+    .nav-right { display: flex; align-items: center; gap: 12px; }
+    .nav-toggle { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+    .nav-toggle span { display: block; width: 24px; height: 2px; background: var(--text); border-radius: 2px; transition: all .3s; }
+    .nav-toggle.open span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
+    .nav-toggle.open span:nth-child(2) { opacity: 0; }
+    .nav-toggle.open span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
+    .mobile-menu {
+      display: none; position: fixed; top: var(--nav-h); left: 0; right: 0; bottom: 0;
+      background: var(--mobile-bg); backdrop-filter: blur(20px);
+      flex-direction: column; align-items: center; justify-content: center;
+      gap: 40px; z-index: 99;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { font-size: 1.5rem; font-weight: 600; color: var(--muted); transition: color .2s; }
+    .mobile-menu a:hover { color: var(--green); }
+
+    /* ===== HERO ===== */
+    #home {
+      min-height: 100vh; display: flex; align-items: center;
+      padding-top: var(--nav-h); position: relative; overflow: hidden;
+    }
+    .hero-glow {
+      position: absolute; width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(16,185,129,.15) 0%, transparent 70%);
+      top: 50%; left: 50%; transform: translate(-50%,-50%);
+      pointer-events: none;
+    }
+    .hero-content { position: relative; z-index: 1; max-width: 760px; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(16,185,129,.12); border: 1px solid var(--border);
+      border-radius: 999px; padding: 6px 16px; font-size: .8rem; color: var(--green);
+      margin-bottom: 28px; font-weight: 500; letter-spacing: .02em;
+    }
+    .hero-badge span.dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: pulse 1.8s infinite; }
+    .hero-name {
+      font-size: clamp(2.8rem, 7vw, 5.5rem);
+      font-weight: 900; letter-spacing: -.03em;
+      line-height: 1.05;
+      background: linear-gradient(135deg, #f1f5f9 30%, #94a3b8 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 16px;
+    }
+    .hero-role {
+      font-size: clamp(1.2rem, 3vw, 1.75rem);
+      font-weight: 600; color: var(--green);
+      line-height: 1.3;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    .hero-role-inner { transition: transform .45s cubic-bezier(.4,0,.2,1); }
+    .hero-role-inner span { display: block; line-height: 1.3; }
+    .hero-desc {
+      font-size: 1rem; color: var(--muted); max-width: 560px;
+      line-height: 1.8; margin-bottom: 40px;
+    }
+    .hero-cta { display: flex; gap: 16px; flex-wrap: wrap; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--green); color: #0a0f1e;
+      font-weight: 700; font-size: .95rem;
+      padding: 14px 28px; border-radius: var(--radius);
+      transition: background .2s, transform .15s, box-shadow .2s;
+      box-shadow: 0 4px 20px var(--green-glow);
+    }
+    .btn-primary:hover { background: #34d399; transform: translateY(-2px); box-shadow: 0 8px 30px var(--green-glow); }
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: 8px;
+      border: 1.5px solid var(--border); color: var(--text);
+      font-weight: 600; font-size: .95rem;
+      padding: 14px 28px; border-radius: var(--radius);
+      background: rgba(255,255,255,.03);
+      transition: border-color .2s, background .2s, transform .15s;
+    }
+    .btn-outline:hover { border-color: var(--green); background: rgba(16,185,129,.06); transform: translateY(-2px); }
+    .hero-stats {
+      display: flex; gap: 40px; flex-wrap: wrap;
+      margin-top: 56px; padding-top: 40px;
+      border-top: 1px solid var(--border);
+    }
+    .stat-item .num { font-size: 2rem; font-weight: 800; color: var(--green); font-family: var(--heading); }
+    .stat-item .label { font-size: .8rem; color: var(--muted); margin-top: 2px; text-transform: uppercase; letter-spacing: .06em; }
+
+    /* ===== SECTION TITLE ===== */
+    .section-title {
+      text-align: center; margin-bottom: 64px;
+    }
+    .section-label {
+      display: inline-block; font-size: .75rem; font-weight: 700;
+      letter-spacing: .14em; text-transform: uppercase;
+      color: var(--green); margin-bottom: 12px;
+    }
+    .section-title h2 {
+      font-size: clamp(1.9rem, 4vw, 2.8rem); font-weight: 800;
+      letter-spacing: -.02em;
+    }
+    .section-title p { color: var(--muted); margin-top: 12px; max-width: 540px; margin-left: auto; margin-right: auto; }
+
+    /* ===== ABOUT ===== */
+    #about { background: var(--surface); }
+    .about-grid {
+      display: grid; grid-template-columns: 260px 1fr; gap: 64px; align-items: center;
+    }
+    .about-photo {
+      width: 240px; height: 240px; border-radius: 20px;
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      border: 2px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 5rem; font-weight: 900; font-family: var(--heading);
+      color: var(--green); position: relative; overflow: hidden;
+      box-shadow: 0 0 40px rgba(16,185,129,.12);
+    }
+    .about-photo::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(16,185,129,.08), transparent);
+    }
+    .about-content h3 { font-size: 1.8rem; font-weight: 700; margin-bottom: 16px; }
+    .about-content p { color: var(--muted); line-height: 1.85; margin-bottom: 16px; }
+    .about-details { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 28px; }
+    .detail-chip {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(16,185,129,.07); border: 1px solid var(--border);
+      border-radius: 8px; padding: 8px 14px; font-size: .85rem; font-weight: 500;
+    }
+    .detail-chip i { color: var(--green); font-size: .85rem; }
+
+    /* ===== SKILLS ===== */
+    .skills-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+    .skill-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 24px 20px;
+      transition: border-color .2s, transform .2s, box-shadow .2s;
+      cursor: default;
+    }
+    .skill-card:hover { border-color: var(--green); transform: translateY(-3px); box-shadow: 0 8px 24px rgba(16,185,129,.12); }
+    .skill-icon {
+      width: 44px; height: 44px; border-radius: 10px;
+      background: rgba(16,185,129,.1); display: flex; align-items: center; justify-content: center;
+      margin-bottom: 16px;
+    }
+    .skill-icon i, .skill-icon svg { font-size: 1.3rem; color: var(--green); }
+    .skill-name { font-weight: 700; font-size: .95rem; margin-bottom: 10px; }
+    .skill-bar-wrap { background: rgba(255,255,255,.06); border-radius: 99px; height: 5px; overflow: hidden; }
+    .skill-bar { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--green), #34d399); width: 0; transition: width 1.2s cubic-bezier(.4,0,.2,1); }
+    .skill-level { font-size: .75rem; color: var(--muted); margin-top: 6px; text-align: right; }
+
+    /* ===== PROJECTS ===== */
+    #projects { background: var(--surface); }
+    .projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 24px; }
+    .project-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; overflow: hidden;
+      transition: border-color .2s, transform .2s, box-shadow .2s;
+      display: flex; flex-direction: column;
+    }
+    .project-card:hover { border-color: var(--green); transform: translateY(-4px); box-shadow: 0 16px 40px rgba(16,185,129,.1); }
+    .project-header {
+      padding: 28px 24px 0;
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+    }
+    .project-icon {
+      width: 48px; height: 48px; border-radius: 12px; flex-shrink: 0;
+      background: linear-gradient(135deg, rgba(16,185,129,.25), rgba(52,211,153,.1));
+      border: 1px solid rgba(16,185,129,.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; color: var(--green);
+    }
+    .project-links { display: flex; gap: 8px; }
+    .project-links a {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: rgba(255,255,255,.05); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--muted); font-size: .85rem; transition: all .2s;
+      cursor: pointer;
+    }
+    .project-links a:hover { background: var(--green); color: #0a0f1e; border-color: var(--green); }
+    .project-body { padding: 20px 24px 24px; flex: 1; display: flex; flex-direction: column; }
+    .project-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 10px; }
+    .project-desc { font-size: .875rem; color: var(--muted); line-height: 1.7; flex: 1; margin-bottom: 20px; }
+    .project-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tag {
+      font-size: .72rem; font-weight: 600; letter-spacing: .04em;
+      padding: 4px 10px; border-radius: 6px;
+      background: rgba(16,185,129,.08); color: var(--green); border: 1px solid rgba(16,185,129,.2);
+    }
+
+    /* ===== SERVICES ===== */
+    .services-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 24px; }
+    .service-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 32px 28px;
+      transition: all .2s;
+      position: relative; overflow: hidden;
+      cursor: default;
+    }
+    .service-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--green), #34d399);
+      transform: scaleX(0); transition: transform .3s;
+    }
+    .service-card:hover { border-color: var(--green); transform: translateY(-4px); box-shadow: 0 12px 32px rgba(16,185,129,.1); }
+    .service-card:hover::before { transform: scaleX(1); }
+    .service-icon {
+      width: 56px; height: 56px; border-radius: 14px; margin-bottom: 24px;
+      background: rgba(16,185,129,.1); display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; color: var(--green);
+    }
+    .service-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 12px; }
+    .service-card p { font-size: .875rem; color: var(--muted); line-height: 1.7; margin-bottom: 24px; }
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: .85rem; font-weight: 600; color: var(--green);
+      transition: gap .2s;
+      cursor: pointer; background: none; border: none; padding: 0;
+    }
+    .btn-ghost:hover { gap: 10px; }
+
+    /* ===== CONTACT ===== */
+    #contact { background: var(--surface); }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 60px; align-items: start; }
+    .contact-info h3 { font-size: 1.5rem; font-weight: 700; margin-bottom: 12px; }
+    .contact-info p { color: var(--muted); line-height: 1.8; margin-bottom: 32px; }
+    .contact-item {
+      display: flex; align-items: flex-start; gap: 14px;
+      margin-bottom: 24px;
+    }
+    .contact-item-icon {
+      width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
+      background: rgba(16,185,129,.1); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--green); font-size: .9rem;
+    }
+    .contact-item-text .label { font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 2px; }
+    .contact-item-text .val { font-size: .9rem; font-weight: 500; }
+    .contact-item-text .val a:hover { color: var(--green); transition: color .2s; }
+    .contact-form {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 36px 32px;
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-size: .8rem; font-weight: 600; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: .06em; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; background: rgba(255,255,255,.04); border: 1.5px solid var(--border);
+      border-radius: 10px; padding: 12px 16px; color: var(--text);
+      font-family: var(--body); font-size: .9rem;
+      transition: border-color .2s, box-shadow .2s; outline: none;
+      appearance: none;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      border-color: var(--green); box-shadow: 0 0 0 3px rgba(16,185,129,.12);
+    }
+    .form-group select option { background: var(--card); color: var(--text); }
+    .form-group textarea { resize: vertical; min-height: 120px; }
+    .form-submit {
+      width: 100%; padding: 14px; background: var(--green); color: #0a0f1e;
+      font-weight: 700; font-size: 1rem; border-radius: var(--radius);
+      transition: background .2s, transform .15s, box-shadow .2s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      box-shadow: 0 4px 20px var(--green-glow);
+    }
+    .form-submit:hover { background: #34d399; transform: translateY(-2px); }
+    .form-submit:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background: var(--bg); border-top: 1px solid var(--border);
+      padding: 40px 0;
+    }
+    .footer-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 20px;
+    }
+    .footer-logo {
+      font-family: var(--heading); font-weight: 800; font-size: 1.2rem;
+      background: linear-gradient(135deg, var(--green), #34d399);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .footer-copy { font-size: .83rem; color: var(--muted); }
+    .footer-socials { display: flex; gap: 12px; }
+    .footer-socials a {
+      width: 38px; height: 38px; border-radius: 9px;
+      background: rgba(255,255,255,.04); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--muted); font-size: .85rem;
+      transition: all .2s; cursor: pointer;
+    }
+    .footer-socials a:hover { background: var(--green); color: #0a0f1e; border-color: var(--green); }
+
+    /* ===== TOAST ===== */
+    .toast {
+      position: fixed; bottom: 28px; right: 28px; z-index: 999;
+      background: var(--card); border: 1px solid var(--green);
+      border-radius: 12px; padding: 16px 20px;
+      display: flex; align-items: center; gap: 12px;
+      font-size: .9rem; font-weight: 500;
+      box-shadow: 0 8px 32px rgba(0,0,0,.4);
+      transform: translateY(80px); opacity: 0;
+      transition: all .4s cubic-bezier(.4,0,.2,1);
+      pointer-events: none; max-width: 340px;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; pointer-events: auto; }
+    .toast i { color: var(--green); font-size: 1.1rem; }
+
+    /* ===== BACK TO TOP ===== */
+    #btt {
+      position: fixed; bottom: 28px; left: 28px; z-index: 90;
+      width: 42px; height: 42px; border-radius: 10px;
+      background: var(--card); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--muted); font-size: .85rem;
+      transition: all .2s, opacity .3s;
+      opacity: 0; pointer-events: none; cursor: pointer;
+    }
+    #btt.show { opacity: 1; pointer-events: auto; }
+    #btt:hover { background: var(--green); color: #0a0f1e; border-color: var(--green); }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.8)} }
+    .fade-in { opacity: 0; transform: translateY(28px); transition: opacity .65s ease, transform .65s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+    .fade-in-delay-1 { transition-delay: .1s; }
+    .fade-in-delay-2 { transition-delay: .2s; }
+    .fade-in-delay-3 { transition-delay: .3s; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .fade-in { transition: none; }
+      .skill-bar { transition: none; }
+      html { scroll-behavior: auto; }
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1024px) {
+      .about-grid { grid-template-columns: 1fr; text-align: center; }
+      .about-photo { margin: 0 auto; }
+      .about-details { justify-content: center; }
+      .contact-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      section { padding: 72px 0; }
+      .nav-links { display: none; }
+      .nav-toggle { display: flex; }
+      .hero-stats { gap: 28px; }
+      .form-row { grid-template-columns: 1fr; }
+      .projects-grid { grid-template-columns: 1fr; }
+      .footer-inner { justify-content: center; text-align: center; }
+    }
+    @media (max-width: 480px) {
+      .hero-cta { flex-direction: column; }
+      .btn-primary, .btn-outline { justify-content: center; }
+      .contact-form { padding: 24px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="#home" class="nav-logo">AO</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#home" class="active">Home</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="theme-btn" id="themeBtn" aria-label="Toggle light/dark mode">
+        <i class="fa-solid fa-moon" id="themeIcon" aria-hidden="true"></i>
+      </button>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true">
+  <a href="#home" onclick="closeMobile()">Home</a>
+  <a href="#about" onclick="closeMobile()">About</a>
+  <a href="#skills" onclick="closeMobile()">Skills</a>
+  <a href="#projects" onclick="closeMobile()">Projects</a>
+  <a href="#services" onclick="closeMobile()">Services</a>
+  <a href="#contact" onclick="closeMobile()">Contact</a>
+</div>
+
+<!-- ===== HERO ===== -->
+<section id="home">
+  <div class="hero-glow"></div>
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-badge fade-in">
+        <span class="dot"></span>
+        Available for new projects
+      </div>
+      <h1 class="hero-name fade-in fade-in-delay-1">Ayokunle<br/>Omotayo</h1>
+      <div class="hero-role fade-in fade-in-delay-1">
+        <div class="hero-role-inner" id="roleInner">
+          <span>Backend Developer</span>
+          <span>Node.js Engineer</span>
+          <span>Django &amp; Laravel Expert</span>
+          <span>Backend Developer</span>
+        </div>
+      </div>
+      <p class="hero-desc fade-in fade-in-delay-2">
+        Building scalable backends, robust APIs, and full web applications from Lagos, Nigeria —
+        for clients worldwide. Let's turn your idea into production-ready software.
+      </p>
+      <div class="hero-cta fade-in fade-in-delay-2">
+        <a href="Ayokunle_Omotayo_CV.pdf" download class="btn-primary">
+          <i class="fa-solid fa-download" aria-hidden="true"></i> Download CV
+        </a>
+        <a href="#contact" class="btn-outline">
+          <i class="fa-solid fa-paper-plane" aria-hidden="true"></i> Request Service
+        </a>
+      </div>
+      <div class="hero-stats fade-in fade-in-delay-3">
+        <div class="stat-item"><div class="num">4+</div><div class="label">Years Experience</div></div>
+        <div class="stat-item"><div class="num">20+</div><div class="label">Projects Delivered</div></div>
+        <div class="stat-item"><div class="num">3</div><div class="label">Core Stacks</div></div>
+        <div class="stat-item"><div class="num">100%</div><div class="label">Client Focus</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ABOUT ===== -->
+<section id="about">
+  <div class="container">
+    <div class="section-title fade-in">
+      <span class="section-label">About Me</span>
+      <h2>The Developer Behind the Code</h2>
+    </div>
+    <div class="about-grid">
+      <div class="about-photo fade-in" aria-label="Ayokunle Omotayo initials placeholder">AO</div>
+      <div class="about-content fade-in fade-in-delay-1">
+        <h3>Hi, I'm Ayokunle Omotayo</h3>
+        <p>
+          I'm a professional backend developer based in Lagos, Nigeria, with hands-on experience
+          building scalable APIs, microservices, and full web applications using Node.js,
+          Django (Python), and Laravel (PHP).
+        </p>
+        <p>
+          I work with clients globally and locally to bring business ideas to life — from MVP
+          to production. Whether you need a REST API, a full-stack web application, or a database
+          architecture review, I've got you covered.
+        </p>
+        <p>
+          I also carry frontend experience (HTML, CSS, JavaScript) to make minor UI corrections
+          and adjustments, so I can move fast without blocking on a separate frontend developer
+          for small tasks.
+        </p>
+        <div class="about-details">
+          <div class="detail-chip"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> Lagos, Nigeria</div>
+          <div class="detail-chip"><i class="fa-solid fa-globe" aria-hidden="true"></i> Remote-Ready Worldwide</div>
+          <div class="detail-chip"><i class="fa-solid fa-briefcase" aria-hidden="true"></i> UBA Application Support</div>
+          <div class="detail-chip"><i class="fa-solid fa-envelope" aria-hidden="true"></i> ayokunle.omotayo01@gmail.com</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SKILLS ===== -->
+<section id="skills">
+  <div class="container">
+    <div class="section-title fade-in">
+      <span class="section-label">Technical Skills</span>
+      <h2>My Tech Stack</h2>
+      <p>Core technologies I use to architect and ship production-grade backend systems</p>
+    </div>
+    <div class="skills-grid">
+      <!-- Node.js -->
+      <div class="skill-card fade-in">
+        <div class="skill-icon">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path d="M11.998 24a.862.862 0 01-.433-.116L8.19 21.926c-.515-.288-.264-.391-.094-.451.493-.172.594-.211 1.12-.511a.105.105 0 01.103.008l2.606 1.547a.346.346 0 00.313 0l10.158-5.864a.318.318 0 00.157-.278V7.629a.321.321 0 00-.16-.283L12.316 1.49a.315.315 0 00-.31 0L1.85 7.346a.32.32 0 00-.162.283v11.723c0 .114.061.221.162.278l2.783 1.608c1.511.755 2.436-.135 2.436-1.028V8.468a.29.29 0 01.29-.289h1.265a.29.29 0 01.29.289v11.742c0 2.013-1.097 3.169-3.007 3.169-.587 0-1.049 0-2.341-.636L.897 21.218A1.776 1.776 0 010 19.686V7.963c0-.641.342-1.238.897-1.562L11.563.337a1.87 1.87 0 011.87 0l10.67 6.064A1.78 1.78 0 0125 7.963v11.723a1.78 1.78 0 01-.897 1.562l-10.67 6.064a1.853 1.853 0 01-.435.116v-.428zm3.307-8.082c-4.45 0-5.378-2.042-5.378-3.755a.29.29 0 01.289-.29h1.29a.29.29 0 01.288.255c.196 1.325.781 1.993 3.511 1.993 2.16 0 3.08-.489 3.08-1.637 0-.66-.261-1.151-3.62-1.48-2.807-.278-4.543-.895-4.543-3.136 0-2.066 1.742-3.297 4.663-3.297 3.28 0 4.902 1.138 5.108 3.579a.29.29 0 01-.072.213.29.29 0 01-.205.092h-1.297a.29.29 0 01-.283-.224c-.319-1.414-1.095-1.867-3.25-1.867-2.394 0-2.672.834-2.672 1.459 0 .758.329 .978 3.51 1.406 3.148.424 4.646 1.023 4.646 3.196-.003 2.235-1.862 3.489-5.065 3.489z"/></svg>
+        </div>
+        <div class="skill-name">Node.js</div>
+        <div class="skill-bar-wrap"><div class="skill-bar" data-width="88"></div></div>
+        <div class="skill-level">Expert — 88%</div>
+      </div>
+      <!-- Python / Django -->
+      <div class="skill-card fade-in fade-in-delay-1">
+        <div class="skill-icon">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path d="M14.31.18l.9.2.73.26.59.3.45.32.34.34.25.34.16.33.1.3.04.26.02.2-.01.13V8.5l-.05.63-.13.55-.21.46-.26.38-.3.31-.33.25-.35.19-.35.14-.33.1-.3.07-.26.04-.21.02H8.83l-.69.05-.59.14-.5.22-.41.27-.33.32-.27.35-.2.36-.15.37-.1.35-.07.32-.04.27-.02.21v3.06H3.23l-.21-.03-.28-.07-.32-.12-.35-.18-.36-.26-.36-.36-.35-.46-.32-.59-.28-.73-.21-.88-.14-1.05L0 11.97l.06-1.22.16-1.04.24-.87.32-.71.36-.57.4-.44.42-.33.42-.24.4-.16.36-.1.32-.05.26-.02.21-.01h5.74l.69-.05.59-.14.5-.21.41-.28.33-.32.27-.35.2-.36.15-.37.1-.35.07-.32.04-.28.02-.21V6.07h2.09l.14.01zm-6.47 14.25l-.23.33-.18.36-.12.36-.07.34-.02.29.04.24.09.2.14.15.2.1.24.05.29-.01.32-.07.34-.14.35-.2.33-.27.3-.33.26-.37.22-.41.17-.44.12-.45.07-.44.03-.42-.01-.37-.06-.3-.11-.23-.17-.16-.24-.09-.3-.02-.35.05-.38.12-.4.2-.4.28-.39.35-.36.42zm9.01-9.19l-.26-.04-.21-.01h-5.74l-.69.05-.59.14-.5.22-.41.27-.33.32-.27.35-.2.36-.15.37-.1.35-.07.32-.04.27-.02.21V11.5l.05.63.13.55.21.46.26.38.3.31.33.25.35.19.35.14.33.1.3.07.26.04.21.02H14.6l.69-.05.59-.14.5-.21.41-.28.33-.32.27-.35.2-.36.15-.37.1-.35.07-.32.04-.28.02-.21V5.18l-.04-.27-.09-.22-.15-.17-.22-.11zm-2.27 1.79a.59.59 0 110 1.18.59.59 0 010-1.18zm-9.74 9.72a.59.59 0 110 1.18.59.59 0 010-1.18z"/></svg>
+        </div>
+        <div class="skill-name">Python / Django</div>
+        <div class="skill-bar-wrap"><div class="skill-bar" data-width="82"></div></div>
+        <div class="skill-level">Advanced — 82%</div>
+      </div>
+      <!-- Laravel/PHP -->
+      <div class="skill-card fade-in fade-in-delay-2">
+        <div class="skill-icon">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path d="M23.642 5.43a.364.364 0 01.014.1v5.149c0 .135-.073.26-.189.326l-4.323 2.49v4.934a.378.378 0 01-.188.326L9.93 23.949a.316.316 0 01-.066.027.236.236 0 01-.065.013.248.248 0 01-.063-.012.387.387 0 01-.073-.028L.725 18.755a.376.376 0 01-.19-.326V3.812c0-.047.01-.092.014-.138.003-.017.01-.033.016-.05a.319.319 0 01.031-.056c.007-.015.014-.03.024-.042.012-.016.026-.026.041-.04.014-.012.026-.025.041-.035L5.089.7a.378.378 0 01.378 0l4.378 2.528h.002c.015.01.027.023.041.035.016.014.03.024.04.04.013.012.02.028.031.042.01.016.018.03.024.047.008.015.013.028.017.044.004.02.006.04.006.06v9.653l3.76-2.164V5.527c0-.048.01-.092.013-.137.003-.02.011-.034.016-.05.011-.022.022-.038.033-.057.008-.015.014-.03.024-.042.012-.016.026-.028.04-.04.016-.013.027-.025.043-.035h.002l4.378-2.528a.38.38 0 01.378 0l4.39 2.526c.016.01.027.023.043.035.013.014.026.024.04.04.012.013.02.028.03.043.012.016.02.03.025.048.007.016.012.028.018.044.003.02.005.04.005.06zm-.753 5.01V6.065l-1.572.906-2.187 1.26v4.373zm-4.938 8.508V14.56l-2.152 1.228-6.133 3.498v4.406zM1.29 4.068v14.425l8.285 4.778v-4.406l-4.322-2.453-.002-.003-.002-.003c-.014-.01-.025-.022-.038-.034-.014-.012-.028-.023-.039-.037l-.002-.003c-.011-.014-.018-.03-.027-.046-.008-.014-.016-.027-.02-.042l-.003-.004c-.007-.016-.009-.032-.013-.048-.004-.018-.009-.034-.01-.052-.001-.014-.001-.027 0-.04V8.288L1.49 7.03 1.29 6.15v-.08zm4.378-3.46L1.553 3.134l4.115 2.37 4.115-2.37L5.668.608zm2.195 9.51l2.186-1.258V4.922L8.442 5.826 6.256 7.087v4.37zM9.316 18l6.102-3.476 3.051-1.737-4.115-2.372-4.93 2.835-3.552 2.045zm9.927-9.788l-4.116 2.372 4.116 2.371 4.115-2.371-4.115-2.372z"/></svg>
+        </div>
+        <div class="skill-name">Laravel / PHP</div>
+        <div class="skill-bar-wrap"><div class="skill-bar" data-width="85"></div></div>
+        <div class="skill-level">Expert — 85%</div>
+      </div>
+      <!-- REST APIs -->
+      <div class="skill-card fade-in">
+        <div class="skill-icon"><i class="fa-solid fa-plug" aria-hidden="true"></i></div>
+        <div class="skill-name">REST APIs</div>
+        <div class="skill-bar-wrap"><div class="skill-bar" data-width="92"></div></div>
+        <div class="skill-level">Expert — 92%</div>
+      </div>
+      <!-- Microservices -->
+      <div class="skill-card fade-in fade-in-delay-1">
+        <div class="skill-icon"><i class="fa-solid fa-cubes" aria-hidden="true"></i></div>
+        <div class="skill-name">Microservices</div>
+        <div class="skill-bar-wrap"><div class="skill-bar" data-width="75"></div></div>
+        <div class="skill-level">Advanced — 75%</div>
+      </div>
+      <!-- MySQL/PostgreSQL -->
+      <div class="skill-card fade-in fade-in-delay-2">
+        <div class="skill-icon"><i class="fa-solid fa-database" aria-hidden="true"></i></div>
+        <div class="skill-name">MySQL / PostgreSQL</div>
+        <div class="skill-bar-wrap"><div class="skill-bar" data-width="88"></div></div>
+        <div class="skill-level">Expert — 88%</div>
+      </div>
+      <!-- React -->
+      <div class="skill-card fade-in">
+        <div class="skill-icon">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path d="M14.23 12.004a2.236 2.236 0 01-2.235 2.236 2.236 2.236 0 01-2.236-2.236 2.236 2.236 0 012.235-2.236 2.236 2.236 0 012.236 2.236zm2.648-10.69c-1.346 0-3.107.96-4.888 2.622-1.78-1.653-3.542-2.602-4.887-2.602-.41 0-.783.093-1.106.278-1.375.793-1.683 3.264-.973 6.365C1.98 8.917 0 10.42 0 12.004c0 1.59 1.99 3.097 5.043 4.03-.704 3.113-.39 5.588.988 6.38.32.187.69.275 1.102.275 1.345 0 3.107-.96 4.888-2.624 1.78 1.654 3.542 2.603 4.887 2.603.41 0 .783-.09 1.106-.275 1.374-.792 1.683-3.263.973-6.365C22.02 15.096 24 13.59 24 12.004c0-1.59-1.99-3.097-5.043-4.032.704-3.11.39-5.587-.988-6.38a2.167 2.167 0 00-1.092-.278zm-.005 1.09c.346 0 .614.084.822.204 .83.481 1.12 2.398.598 4.92-.04.19-.086.38-.137.57-1.084-.265-2.26-.454-3.498-.556a26.59 26.59 0 00-2.367-3.135c.947-.9 1.876-1.564 2.692-1.97.432-.216.838-.325 1.222-.325v-.004zm-9.586 0c.366 0 .77.097 1.204.31.82.408 1.755 1.074 2.7 1.97-.803.857-1.612 1.898-2.363 3.131-1.24.1-2.416.29-3.503.557-.052-.19-.1-.383-.137-.575-.525-2.52-.237-4.438.59-4.92a1.08 1.08 0 01.51-.127v-.346zm4.783 4.06c.462 0 .927.015 1.387.043a24.1 24.1 0 01-.717 1.222 24.1 24.1 0 01-.682-1.22c.003 0 .008-.001.012-.001v-.044zm-2.437.3l.015.004c.275.663.598 1.35.963 2.04a21.9 21.9 0 00-.963 2.04l-.015.004c-.275-.663-.598-1.35-.963-2.04.36-.69.683-1.38.963-2.044v-.004zm4.87 0c.28.664.604 1.354.963 2.044-.359.69-.682 1.381-.963 2.044l-.015-.003c-.275-.663-.599-1.351-.963-2.04a21.9 21.9 0 00.963-2.041l.015-.004zm-7.26 2.35c.337 0 .678.014 1.02.04-.156.35-.304.703-.442 1.053-.137.35-.265.7-.382 1.05a21.23 21.23 0 01-1.02-2.103c.27-.024.547-.04.824-.04zm9.64 0c.28 0 .554.016.824.04a21.23 21.23 0 01-1.022 2.107c-.117-.35-.244-.7-.381-1.05a21.1 21.1 0 00-.443-1.056c.342-.028.684-.04 1.022-.04v-.001zM12 13.35c.26.363.522.72.788 1.072a21.2 21.2 0 001.222-.068c.4-.045.793-.1 1.18-.165a21.5 21.5 0 00-.677-1.215 21.4 21.4 0 00-.677 1.215c.387.065.78.12 1.18.165.466.04.932.066 1.404.066-.008-.116-.02-.231-.034-.347a21.2 21.2 0 001.022-2.107c.012.117.023.235.033.353a21 21 0 001.022-2.107c-.01.118-.02.235-.033.352a21.3 21.3 0 001.022 2.107c-.01-.118-.02-.235-.033-.352zm0 0"/></svg>
+        </div>
+        <div class="skill-name">React (Basic)</div>
+        <div class="skill-bar-wrap"><div class="skill-bar" data-width="60"></div></div>
+        <div class="skill-level">Intermediate — 60%</div>
+      </div>
+      <!-- HTML/CSS/JS -->
+      <div class="skill-card fade-in fade-in-delay-1">
+        <div class="skill-icon"><i class="fa-brands fa-html5" aria-hidden="true"></i></div>
+        <div class="skill-name">HTML / CSS / JS</div>
+        <div class="skill-bar-wrap"><div class="skill-bar" data-width="78"></div></div>
+        <div class="skill-level">Advanced — 78%</div>
+      </div>
+      <!-- Git -->
+      <div class="skill-card fade-in fade-in-delay-2">
+        <div class="skill-icon"><i class="fa-brands fa-git-alt" aria-hidden="true"></i></div>
+        <div class="skill-name">Git / GitHub</div>
+        <div class="skill-bar-wrap"><div class="skill-bar" data-width="85"></div></div>
+        <div class="skill-level">Expert — 85%</div>
+      </div>
+      <!-- Docker -->
+      <div class="skill-card fade-in">
+        <div class="skill-icon"><i class="fa-brands fa-docker" aria-hidden="true"></i></div>
+        <div class="skill-name">Docker (Basic)</div>
+        <div class="skill-bar-wrap"><div class="skill-bar" data-width="55"></div></div>
+        <div class="skill-level">Intermediate — 55%</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PROJECTS ===== -->
+<section id="projects">
+  <div class="container">
+    <div class="section-title fade-in">
+      <span class="section-label">Portfolio</span>
+      <h2>Projects Delivered</h2>
+      <p>A selection of real-world applications I've built for businesses across industries</p>
+    </div>
+    <div class="projects-grid">
+
+      <!-- 1. LagosApps -->
+      <article class="project-card fade-in">
+        <div class="project-header">
+          <div class="project-icon"><i class="fa-solid fa-city" aria-hidden="true"></i></div>
+          <div class="project-links">
+            <a href="https://lagosapps.com" target="_blank" rel="noopener noreferrer" aria-label="Live — LagosApps">
+              <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+        <div class="project-body">
+          <h3 class="project-title">LagosApps</h3>
+          <p class="project-desc">
+            Backend-only service powering a Lagos city applications platform — scalable REST API
+            handling user management, listings, and data workflows at production load.
+          </p>
+          <div class="project-tags">
+            <span class="tag">Node.js</span><span class="tag">MySQL</span><span class="tag">REST API</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- 2. Mainland Solar -->
+      <article class="project-card fade-in fade-in-delay-1">
+        <div class="project-header">
+          <div class="project-icon"><i class="fa-solid fa-solar-panel" aria-hidden="true"></i></div>
+          <div class="project-links">
+            <a href="https://github.com/ayokunle-omotayo/mainlandsolar_backend" target="_blank" rel="noopener noreferrer" aria-label="GitHub — Mainland Solar">
+              <i class="fa-brands fa-github" aria-hidden="true"></i>
+            </a>
+            <a href="https://mainlandsolar.ng" target="_blank" rel="noopener noreferrer" aria-label="Live — Mainland Solar">
+              <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+        <div class="project-body">
+          <h3 class="project-title">Mainland Solar Backend</h3>
+          <p class="project-desc">
+            Full backend API and admin panel for a solar energy company — managing products,
+            quotes, client orders, and installation scheduling at scale.
+          </p>
+          <div class="project-tags">
+            <span class="tag">Node.js</span><span class="tag">MySQL</span><span class="tag">REST API</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- 3. Greenware Academy -->
+      <article class="project-card fade-in fade-in-delay-2">
+        <div class="project-header">
+          <div class="project-icon"><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i></div>
+          <div class="project-links">
+            <a href="https://github.com/ayokunle-omotayo/greenwareacademy" target="_blank" rel="noopener noreferrer" aria-label="GitHub — Greenware Academy">
+              <i class="fa-brands fa-github" aria-hidden="true"></i>
+            </a>
+            <a href="https://greenwareacademy.com" target="_blank" rel="noopener noreferrer" aria-label="Live — Greenware Academy">
+              <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+        <div class="project-body">
+          <h3 class="project-title">Greenware Academy</h3>
+          <p class="project-desc">
+            E-learning platform for skills development — featuring course management, student
+            progress tracking, payment integration, and a custom content delivery backend.
+          </p>
+          <div class="project-tags">
+            <span class="tag">Node.js</span><span class="tag">JavaScript</span><span class="tag">MySQL</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- 4. Gadgetspal -->
+      <article class="project-card fade-in">
+        <div class="project-header">
+          <div class="project-icon"><i class="fa-solid fa-mobile-screen-button" aria-hidden="true"></i></div>
+          <div class="project-links">
+            <a href="https://github.com/ayokunle-omotayo" target="_blank" rel="noopener noreferrer" aria-label="GitHub — Gadgetspal">
+              <i class="fa-brands fa-github" aria-hidden="true"></i>
+            </a>
+            <a href="https://gadgetspal.com" target="_blank" rel="noopener noreferrer" aria-label="Live — Gadgetspal">
+              <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+        <div class="project-body">
+          <h3 class="project-title">GadgetsPal</h3>
+          <p class="project-desc">
+            Full-stack gadgets e-commerce platform — React frontend paired with a Node.js REST
+            API backend, handling product listings, cart, orders, and inventory in MySQL.
+          </p>
+          <div class="project-tags">
+            <span class="tag">React.js</span><span class="tag">Node.js</span><span class="tag">MySQL</span><span class="tag">REST API</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- 5. Mainlandclinic -->
+      <article class="project-card fade-in fade-in-delay-1">
+        <div class="project-header">
+          <div class="project-icon"><i class="fa-solid fa-hospital" aria-hidden="true"></i></div>
+          <div class="project-links">
+            <a href="https://github.com/ayokunle-omotayo" target="_blank" rel="noopener noreferrer" aria-label="GitHub — Mainlandclinic">
+              <i class="fa-brands fa-github" aria-hidden="true"></i>
+            </a>
+            <a href="https://mainlandclinic.com" target="_blank" rel="noopener noreferrer" aria-label="Live — Mainlandclinic">
+              <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+        <div class="project-body">
+          <h3 class="project-title">Mainlandclinic</h3>
+          <p class="project-desc">
+            Healthcare clinic web application — appointment booking, patient records management,
+            and admin dashboard built with a Laravel backend and responsive frontend.
+          </p>
+          <div class="project-tags">
+            <span class="tag">Laravel</span><span class="tag">PHP</span><span class="tag">HTML/CSS</span><span class="tag">JavaScript</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- 6. VanLagos -->
+      <article class="project-card fade-in fade-in-delay-2">
+        <div class="project-header">
+          <div class="project-icon"><i class="fa-solid fa-van-shuttle" aria-hidden="true"></i></div>
+          <div class="project-links">
+            <a href="https://github.com/ayokunle-omotayo/vanlagos_api_cursor" target="_blank" rel="noopener noreferrer" aria-label="GitHub — VanLagos">
+              <i class="fa-brands fa-github" aria-hidden="true"></i>
+            </a>
+            <a href="https://vanlagos.com" target="_blank" rel="noopener noreferrer" aria-label="Live — VanLagos">
+              <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+        <div class="project-body">
+          <h3 class="project-title">VanLagos Backend</h3>
+          <p class="project-desc">
+            Backend API for a Lagos transport/logistics platform — ride booking, driver management,
+            real-time trip tracking, and billing built on Node.js with PostgreSQL.
+          </p>
+          <div class="project-tags">
+            <span class="tag">Node.js</span><span class="tag">PostgreSQL</span><span class="tag">REST API</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- 7. Puissant Logistics -->
+      <article class="project-card fade-in">
+        <div class="project-header">
+          <div class="project-icon"><i class="fa-solid fa-truck-fast" aria-hidden="true"></i></div>
+          <div class="project-links">
+            <a href="https://puissantlogistics.com" target="_blank" rel="noopener noreferrer" aria-label="Live — Puissant Logistics">
+              <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+        <div class="project-body">
+          <h3 class="project-title">Puissant Logistics</h3>
+          <p class="project-desc">
+            Corporate logistics company website with shipment inquiry forms, dynamic content
+            management, and a PHP-powered backend handling requests and service pages.
+          </p>
+          <div class="project-tags">
+            <span class="tag">PHP</span><span class="tag">HTML/CSS</span><span class="tag">JavaScript</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- 8. Online PRV -->
+      <article class="project-card fade-in fade-in-delay-1">
+        <div class="project-header">
+          <div class="project-icon"><i class="fa-solid fa-file-invoice" aria-hidden="true"></i></div>
+          <div class="project-links">
+            <a href="https://onlineprv.teptimesheets.com/" target="_blank" rel="noopener noreferrer" aria-label="Live — Online PRV">
+              <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+        <div class="project-body">
+          <h3 class="project-title">Online PRV</h3>
+          <p class="project-desc">
+            Online payment requisition and verification system — streamlining internal approval
+            workflows, document generation, and timesheet management for corporate teams.
+          </p>
+          <div class="project-tags">
+            <span class="tag">PHP</span><span class="tag">HTML/CSS</span><span class="tag">JavaScript</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- 9. Mainland Group -->
+      <article class="project-card fade-in fade-in-delay-2">
+        <div class="project-header">
+          <div class="project-icon"><i class="fa-solid fa-building" aria-hidden="true"></i></div>
+          <div class="project-links">
+            <a href="https://mainlandgroup.org/" target="_blank" rel="noopener noreferrer" aria-label="Live — Mainland Group">
+              <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+        <div class="project-body">
+          <h3 class="project-title">Mainland Group</h3>
+          <p class="project-desc">
+            Corporate group website backed by a Laravel API — multi-subsidiary content management,
+            contact workflows, and dynamic pages for the Mainland Group of companies.
+          </p>
+          <div class="project-tags">
+            <span class="tag">Laravel</span><span class="tag">PHP</span><span class="tag">JavaScript</span>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===== SERVICES ===== -->
+<section id="services">
+  <div class="container">
+    <div class="section-title fade-in">
+      <span class="section-label">What I Offer</span>
+      <h2>Services</h2>
+      <p>End-to-end backend solutions tailored for your business needs</p>
+    </div>
+    <div class="services-grid">
+
+      <div class="service-card fade-in">
+        <div class="service-icon"><i class="fa-solid fa-plug-circle-bolt" aria-hidden="true"></i></div>
+        <h3>API Development</h3>
+        <p>
+          RESTful and GraphQL APIs built with Node.js, Django REST Framework, or Laravel.
+          Secure, documented, and performance-optimised for web and mobile clients.
+        </p>
+        <button class="btn-ghost" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
+          Request Service <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <div class="service-card fade-in fade-in-delay-1">
+        <div class="service-icon"><i class="fa-solid fa-layer-group" aria-hidden="true"></i></div>
+        <h3>Full Web Application</h3>
+        <p>
+          From database schema to deployment — complete web applications using your preferred
+          stack, with admin panels, user auth, and production-ready infrastructure.
+        </p>
+        <button class="btn-ghost" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
+          Request Service <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <div class="service-card fade-in fade-in-delay-2">
+        <div class="service-icon"><i class="fa-solid fa-database" aria-hidden="true"></i></div>
+        <h3>Database Architecture</h3>
+        <p>
+          Relational schema design, query optimisation, and migration strategies for MySQL
+          and PostgreSQL — built for scale and long-term maintainability.
+        </p>
+        <button class="btn-ghost" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
+          Request Service <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <div class="service-card fade-in fade-in-delay-3">
+        <div class="service-icon"><i class="fa-solid fa-lightbulb" aria-hidden="true"></i></div>
+        <h3>Tech Consulting</h3>
+        <p>
+          Architecture reviews, stack selection, and technical guidance for startups and
+          growing businesses — turning business requirements into solid engineering decisions.
+        </p>
+        <button class="btn-ghost" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
+          Request Service <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===== CONTACT ===== -->
+<section id="contact">
+  <div class="container">
+    <div class="section-title fade-in">
+      <span class="section-label">Get In Touch</span>
+      <h2>Let's Build Something</h2>
+      <p>Have a project in mind? Send me the details and I'll get back to you within 24 hours.</p>
+    </div>
+    <div class="contact-grid">
+
+      <div class="fade-in">
+        <h3>Contact Information</h3>
+        <p>I'm open to freelance projects, remote roles, and local engagements. Reach me through any of the channels below.</p>
+
+        <div class="contact-item">
+          <div class="contact-item-icon"><i class="fa-solid fa-envelope" aria-hidden="true"></i></div>
+          <div class="contact-item-text">
+            <div class="label">Email</div>
+            <div class="val"><a href="mailto:ayokunle.omotayo01@gmail.com">ayokunle.omotayo01@gmail.com</a></div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-item-icon"><i class="fa-brands fa-linkedin" aria-hidden="true"></i></div>
+          <div class="contact-item-text">
+            <div class="label">LinkedIn</div>
+            <div class="val"><a href="https://www.linkedin.com/in/ayokunleomotayo" target="_blank" rel="noopener noreferrer">linkedin.com/in/ayokunleomotayo</a></div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-item-icon"><i class="fa-brands fa-github" aria-hidden="true"></i></div>
+          <div class="contact-item-text">
+            <div class="label">GitHub</div>
+            <div class="val"><a href="https://github.com/ayokunle-omotayo" target="_blank" rel="noopener noreferrer">github.com/ayokunle-omotayo</a></div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-item-icon"><i class="fa-solid fa-location-dot" aria-hidden="true"></i></div>
+          <div class="contact-item-text">
+            <div class="label">Location</div>
+            <div class="val">Oshodi-Isolo, Lagos, Nigeria</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-form fade-in fade-in-delay-1">
+        <form id="contactForm" novalidate>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="fname">Full Name</label>
+              <input type="text" id="fname" name="name" placeholder="John Doe" required autocomplete="name" />
+            </div>
+            <div class="form-group">
+              <label for="femail">Email Address</label>
+              <input type="email" id="femail" name="email" placeholder="john@example.com" required autocomplete="email" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="fphone">Phone / WhatsApp</label>
+              <input type="tel" id="fphone" name="phone" placeholder="+234 800 000 0000" autocomplete="tel" />
+            </div>
+            <div class="form-group">
+              <label for="fservice">Service Needed</label>
+              <select id="fservice" name="service" required>
+                <option value="" disabled selected>Select a service</option>
+                <option value="api">API Development</option>
+                <option value="webapp">Full Web Application</option>
+                <option value="db">Database Architecture</option>
+                <option value="consult">Tech Consulting</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="fbrief">Project Brief</label>
+            <textarea id="fbrief" name="brief" placeholder="Tell me about your project — goals, timeline, tech preferences..." required></textarea>
+          </div>
+          <button type="submit" class="form-submit" id="formSubmit">
+            <i class="fa-solid fa-paper-plane" aria-hidden="true"></i> Send Message
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <span class="footer-logo">Ayokunle Omotayo</span>
+      <p class="footer-copy">&copy; <span id="year"></span> Ayokunle Omotayo. All rights reserved.</p>
+      <div class="footer-socials">
+        <a href="mailto:ayokunle.omotayo01@gmail.com" aria-label="Email">
+          <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+        </a>
+        <a href="https://www.linkedin.com/in/ayokunleomotayo" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+          <i class="fa-brands fa-linkedin" aria-hidden="true"></i>
+        </a>
+        <a href="https://github.com/ayokunle-omotayo" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+          <i class="fa-brands fa-github" aria-hidden="true"></i>
+        </a>
+        <a href="Ayokunle_Omotayo_CV.pdf" download aria-label="Download CV">
+          <i class="fa-solid fa-file-arrow-down" aria-hidden="true"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toast" role="alert" aria-live="polite">
+  <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+  <span>Message sent! I'll get back to you shortly.</span>
+</div>
+
+<!-- ===== BACK TO TOP ===== -->
+<button id="btt" aria-label="Back to top">
+  <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+</button>
+
+<script>
+  // ===== YEAR =====
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // ===== THEME TOGGLE =====
+  const html = document.documentElement;
+  const themeBtn = document.getElementById('themeBtn');
+  const themeIcon = document.getElementById('themeIcon');
+  const savedTheme = localStorage.getItem('ao-theme') || 'dark';
+  function applyTheme(t) {
+    html.classList.toggle('light', t === 'light');
+    themeIcon.className = t === 'light' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+    localStorage.setItem('ao-theme', t);
+  }
+  applyTheme(savedTheme);
+  themeBtn.addEventListener('click', () => {
+    applyTheme(html.classList.contains('light') ? 'dark' : 'light');
+  });
+
+  // ===== MOBILE NAV =====
+  const toggle = document.getElementById('navToggle');
+  const mobileMenu = document.getElementById('mobileMenu');
+  toggle.addEventListener('click', () => {
+    const open = mobileMenu.classList.toggle('open');
+    toggle.classList.toggle('open', open);
+    toggle.setAttribute('aria-expanded', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  });
+  function closeMobile() {
+    mobileMenu.classList.remove('open');
+    toggle.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  // ===== ROLE CYCLING =====
+  const roles = ['Backend Developer', 'Node.js Engineer', 'Django & Laravel Expert'];
+  let roleIdx = 0;
+  const roleEl = document.querySelector('.hero-role');
+  const roleInner = document.getElementById('roleInner');
+  roleInner.innerHTML = roles.map(r => `<span>${r}</span>`).join('');
+  // measure actual rendered height of one span, then size the container to match
+  function initRoleCycler() {
+    const firstSpan = roleInner.querySelector('span');
+    const spanH = firstSpan ? firstSpan.offsetHeight : 32;
+    roleEl.style.height = spanH + 'px';
+    setInterval(() => {
+      roleIdx = (roleIdx + 1) % roles.length;
+      roleInner.style.transform = `translateY(-${roleIdx * spanH}px)`;
+    }, 2600);
+  }
+  // wait one frame so fonts are loaded and layout is complete
+  requestAnimationFrame(() => requestAnimationFrame(initRoleCycler));
+
+  // ===== ACTIVE NAV ON SCROLL =====
+  const sections = document.querySelectorAll('section[id]');
+  const navAs = document.querySelectorAll('.nav-links a');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navAs.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id));
+      }
+    });
+  }, { rootMargin: '-40% 0px -55% 0px' });
+  sections.forEach(s => observer.observe(s));
+
+  // ===== FADE-IN ANIMATION =====
+  const fadeEls = document.querySelectorAll('.fade-in');
+  const fadeObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); fadeObs.unobserve(e.target); }
+    });
+  }, { threshold: 0.12 });
+  fadeEls.forEach(el => fadeObs.observe(el));
+
+  // Trigger hero immediately
+  document.querySelectorAll('#home .fade-in').forEach(el => el.classList.add('visible'));
+
+  // ===== SKILL BARS =====
+  const skillObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.querySelectorAll('.skill-bar').forEach(bar => {
+          bar.style.width = bar.dataset.width + '%';
+        });
+        skillObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.2 });
+  document.querySelectorAll('.skills-grid').forEach(g => skillObs.observe(g));
+
+  // ===== BACK TO TOP =====
+  const btt = document.getElementById('btt');
+  window.addEventListener('scroll', () => {
+    btt.classList.toggle('show', window.scrollY > 500);
+  }, { passive: true });
+  btt.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+  // ===== TOAST =====
+  function showToast() {
+    const t = document.getElementById('toast');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 4500);
+  }
+
+  // ===== CONTACT FORM =====
+  document.getElementById('contactForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('formSubmit');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending…';
+    setTimeout(() => {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Send Message';
+      e.target.reset();
+      showToast();
+    }, 1400);
+  });
+</script>
+</body>
+</html>
