@@ -407,6 +407,27 @@
     .form-submit:hover { background: #34d399; transform: translateY(-2px); }
     .form-submit:disabled { opacity: .6; cursor: not-allowed; transform: none; }
 
+    /* ===== FORM VALIDATION ===== */
+    .req { color: #f87171; font-size: .75rem; }
+    .field-error {
+      display: block; font-size: .78rem; color: #f87171;
+      margin-top: 5px; min-height: 1rem;
+      transition: opacity .2s;
+    }
+    .form-group input.invalid,
+    .form-group select.invalid,
+    .form-group textarea.invalid {
+      border-color: #f87171 !important;
+      box-shadow: 0 0 0 3px rgba(248,113,113,.12) !important;
+    }
+    .form-group input.valid,
+    .form-group select.valid,
+    .form-group textarea.valid {
+      border-color: var(--green) !important;
+    }
+    .toast-error { border-color: #f87171 !important; }
+    .toast-error i { color: #f87171 !important; }
+
     /* ===== FOOTER ===== */
     footer {
       background: var(--bg); border-top: 1px solid var(--border);
@@ -1035,37 +1056,46 @@
       </div>
 
       <div class="contact-form fade-in fade-in-delay-1">
-        <form id="contactForm" novalidate>
+        <form id="contactForm" action="https://formspree.io/f/xeeddoea" method="POST" novalidate>
+          <!-- hidden reply-to so Formspree threads replies correctly -->
+          <input type="hidden" name="_replyto" id="f_replyto" />
+          <input type="hidden" name="_subject" id="f_subject" value="New project enquiry from portfolio" />
+
           <div class="form-row">
             <div class="form-group">
-              <label for="fname">Full Name</label>
-              <input type="text" id="fname" name="name" placeholder="John Doe" required autocomplete="name" />
+              <label for="fname">Full Name <span class="req">*</span></label>
+              <input type="text" id="fname" name="name" placeholder="John Doe" autocomplete="name" />
+              <span class="field-error" id="err-name"></span>
             </div>
             <div class="form-group">
-              <label for="femail">Email Address</label>
-              <input type="email" id="femail" name="email" placeholder="john@example.com" required autocomplete="email" />
+              <label for="femail">Email Address <span class="req">*</span></label>
+              <input type="email" id="femail" name="email" placeholder="john@example.com" autocomplete="email" />
+              <span class="field-error" id="err-email"></span>
             </div>
           </div>
           <div class="form-row">
             <div class="form-group">
               <label for="fphone">Phone / WhatsApp</label>
               <input type="tel" id="fphone" name="phone" placeholder="+234 800 000 0000" autocomplete="tel" />
+              <span class="field-error" id="err-phone"></span>
             </div>
             <div class="form-group">
-              <label for="fservice">Service Needed</label>
-              <select id="fservice" name="service" required>
+              <label for="fservice">Service Needed <span class="req">*</span></label>
+              <select id="fservice" name="service">
                 <option value="" disabled selected>Select a service</option>
-                <option value="api">API Development</option>
-                <option value="webapp">Full Web Application</option>
-                <option value="db">Database Architecture</option>
-                <option value="consult">Tech Consulting</option>
-                <option value="other">Other</option>
+                <option value="API Development">API Development</option>
+                <option value="Full Web Application">Full Web Application</option>
+                <option value="Database Architecture">Database Architecture</option>
+                <option value="Tech Consulting">Tech Consulting</option>
+                <option value="Other">Other</option>
               </select>
+              <span class="field-error" id="err-service"></span>
             </div>
           </div>
           <div class="form-group">
-            <label for="fbrief">Project Brief</label>
-            <textarea id="fbrief" name="brief" placeholder="Tell me about your project — goals, timeline, tech preferences..." required></textarea>
+            <label for="fbrief">Project Brief <span class="req">*</span></label>
+            <textarea id="fbrief" name="brief" placeholder="Tell me about your project — goals, timeline, tech preferences..."></textarea>
+            <span class="field-error" id="err-brief"></span>
           </div>
           <button type="submit" class="form-submit" id="formSubmit">
             <i class="fa-solid fa-paper-plane" aria-hidden="true"></i> Send Message
@@ -1210,24 +1240,122 @@
   btt.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
   // ===== TOAST =====
-  function showToast() {
+  function showToast(msg, isError) {
     const t = document.getElementById('toast');
+    const icon = t.querySelector('i');
+    const span = t.querySelector('span');
+    icon.className = isError ? 'fa-solid fa-circle-xmark' : 'fa-solid fa-circle-check';
+    span.textContent = msg;
+    t.classList.toggle('toast-error', !!isError);
     t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 4500);
+    setTimeout(() => t.classList.remove('show'), 5000);
   }
 
-  // ===== CONTACT FORM =====
-  document.getElementById('contactForm').addEventListener('submit', (e) => {
+  // ===== FORM VALIDATION =====
+  const FIELDS = {
+    fname:    { el: null, err: null, validate(v) {
+      if (!v) return 'Full name is required.';
+      if (v.length < 2) return 'Name must be at least 2 characters.';
+      return '';
+    }},
+    femail:   { el: null, err: null, validate(v) {
+      if (!v) return 'Email address is required.';
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) return 'Please enter a valid email address.';
+      return '';
+    }},
+    fphone:   { el: null, err: null, validate(v) {
+      if (!v) return '';  // optional
+      if (!/^[\+\d\s\-\(\)]{7,20}$/.test(v)) return 'Enter a valid phone number.';
+      return '';
+    }},
+    fservice: { el: null, err: null, validate(v) {
+      if (!v) return 'Please select a service.';
+      return '';
+    }},
+    fbrief:   { el: null, err: null, validate(v) {
+      if (!v) return 'Project brief is required.';
+      if (v.length < 20) return 'Please provide at least 20 characters describing your project.';
+      return '';
+    }},
+  };
+
+  const ERR_IDS = { fname:'err-name', femail:'err-email', fphone:'err-phone', fservice:'err-service', fbrief:'err-brief' };
+
+  Object.keys(FIELDS).forEach(id => {
+    FIELDS[id].el  = document.getElementById(id);
+    FIELDS[id].err = document.getElementById(ERR_IDS[id]);
+    // live validation on blur
+    FIELDS[id].el.addEventListener('blur', () => validateField(id));
+    // clear error on input
+    FIELDS[id].el.addEventListener('input', () => {
+      if (FIELDS[id].el.classList.contains('invalid')) validateField(id);
+    });
+  });
+
+  function validateField(id) {
+    const f   = FIELDS[id];
+    const val = f.el.value.trim();
+    const msg = f.validate(val);
+    f.err.textContent = msg;
+    f.el.classList.toggle('invalid', !!msg);
+    f.el.classList.toggle('valid', !msg && (val.length > 0 || id === 'fphone'));
+    return !msg;
+  }
+
+  function validateAll() {
+    return Object.keys(FIELDS).map(id => validateField(id)).every(Boolean);
+  }
+
+  // ===== CONTACT FORM SUBMIT =====
+  document.getElementById('contactForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const btn = document.getElementById('formSubmit');
+    if (!validateAll()) {
+      // scroll to first error
+      const first = Object.keys(FIELDS).find(id => FIELDS[id].el.classList.contains('invalid'));
+      if (first) FIELDS[first].el.focus();
+      showToast('Please fix the errors below before sending.', true);
+      return;
+    }
+
+    const btn  = document.getElementById('formSubmit');
+    const form = e.target;
+
+    // sync hidden reply-to with email value
+    document.getElementById('f_replyto').value  = FIELDS.femail.el.value.trim();
+    document.getElementById('f_subject').value  =
+      'New enquiry: ' + (FIELDS.fservice.el.value || 'General') + ' — from ' + FIELDS.fname.el.value.trim();
+
     btn.disabled = true;
     btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending…';
-    setTimeout(() => {
+
+    try {
+      const res = await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { Accept: 'application/json' },
+      });
+
+      if (res.ok) {
+        btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Message Sent!';
+        form.reset();
+        Object.keys(FIELDS).forEach(id => {
+          FIELDS[id].el.classList.remove('valid', 'invalid');
+          FIELDS[id].err.textContent = '';
+        });
+        showToast('Message sent! I\'ll get back to you within 24 hours.', false);
+        setTimeout(() => {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Send Message';
+        }, 3000);
+      } else {
+        const data = await res.json();
+        throw new Error(data?.errors?.[0]?.message || 'Submission failed.');
+      }
+    } catch (err) {
       btn.disabled = false;
       btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Send Message';
-      e.target.reset();
-      showToast();
-    }, 1400);
+      showToast('Failed to send. Please email me directly at ayokunle.omotayo01@gmail.com', true);
+    }
   });
 </script>
 </body>
